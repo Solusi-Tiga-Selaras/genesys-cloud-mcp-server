@@ -8,6 +8,14 @@
   "type": "module",
   "license": "MIT",
   "author": "Solutif",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Solusi-Tiga-Selaras/genesys-cloud-mcp-server.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Solusi-Tiga-Selaras/genesys-cloud-mcp-server/issues"
+  },
+  "homepage": "https://github.com/Solusi-Tiga-Selaras/genesys-cloud-mcp-server#readme",
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "start": "tsx src/index.ts",
