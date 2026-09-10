@@ -5,8 +5,11 @@
   "description": "Solutif's MCP server for Genesys Cloud",
   "long_description": "Connects Claude to Genesys Cloud's Platform API for queue administration and conversation analytics. Queue creation is opt-in and requires per-call approval in the MCP client.\n\nThis project is not affiliated with Genesys.",
   "author": {
-    "name": "Solutif"
+    "name": "Solutif",
+    "url": "https://github.com/Solusi-Tiga-Selaras"
   },
+  "documentation": "https://github.com/Solusi-Tiga-Selaras/genesys-cloud-mcp-server#readme",
+  "support": "https://github.com/Solusi-Tiga-Selaras/genesys-cloud-mcp-server/issues",
   "server": {
     "type": "node",
     "entry_point": "dist/index.js",
@@ -113,5 +116,9 @@
   "license": "MIT",
   "privacy_policies": [
     "https://www.genesys.com/en-gb/company/legal/privacy-policy"
-  ]
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Solusi-Tiga-Selaras/genesys-cloud-mcp-server.git"
+  }
 }
