@@ -1,11 +1,39 @@
 # Tools
 
+## Create Queue
+
+Tool name: `create_queue`
+
+Creates a routing queue after checking that a queue with the same name does not already exist. This write tool is not registered unless `GENESYSCLOUD_ENABLE_QUEUE_CREATION=true` is set.
+
+[Source file](/src/tools/createQueue/createQueue.ts).
+
+### Inputs
+
+- `name` (required): Unique queue name
+- `description` (optional): Queue description
+- `divisionId` (optional): Division UUID; omitting it uses the default division
+
+### Security
+
+Required permissions:
+
+- `routing:queue:add`
+- `routing:queue:view`
+
+Do not add this tool to the MCP client's auto-approved tools. The MCP client must request user approval for each call; tool annotations are advisory metadata, not server-side proof of human approval.
+
+Platform API endpoints used:
+
+- `GET /api/v2/routing/queues`
+- `POST /api/v2/routing/queues`
+
 ## Search Queues
 
 **Tool name:** `search_queues`
 
 Searches for routing queues based on their name, allowing for wildcard searches. Returns a paginated list of matching queues, including their Name, ID, Description (if available), and Member Count (if available). Also provides pagination details like current page, page size, total results found, and total pages available. Useful for finding specific queue IDs, checking queue configurations, or listing available queues.
-[Source file](/src/tools/searchQueues.ts).
+[Source file](/src/tools/searchQueues/searchQueues.ts).
 
 ### Inputs
 
@@ -166,7 +194,7 @@ Platform API endpoints used:
 
 Searches for voice conversations within a specified time window, optionally filtering by phone number. Returns a paginated list of conversation metadata for use in further analysis or tool calls.
 
-[Source file](/src/tools/searchVoiceConversations.ts).
+[Source file](/src/tools/searchVoiceConversations/searchVoiceConversations.ts).
 
 ### Input
 

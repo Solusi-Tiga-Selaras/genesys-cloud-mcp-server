@@ -50,6 +50,23 @@ describe("Server Runs", () => {
     ]);
   });
 
+  test("server exposes queue creation only when enabled", async () => {
+    const transport = new StdioClientTransport({
+      command: "node",
+      args: [join(__dirname, "../../dist/index.js")],
+      env: {
+        PATH: process.env.PATH ?? "",
+        GENESYSCLOUD_ENABLE_QUEUE_CREATION: "true",
+      },
+    });
+
+    client = new Client({ name: "test-client", version: "0.1.0" });
+    await client.connect(transport);
+
+    const { tools } = await client.listTools();
+    expect(tools.map(({ name }) => name)).toContain("create_queue");
+  });
+
   test("server version matches version in package.json", async () => {
     const transport = new StdioClientTransport({
       command: "node",
@@ -82,7 +99,7 @@ describe("Server Runs", () => {
 
     client = new Client({
       name: "test-client",
-      version: "1.0.4",
+      version: "0.1.0",
     });
 
     await client.connect(transport);
@@ -95,7 +112,7 @@ describe("Server Runs", () => {
     execSync("npm link", { stdio: "inherit" });
     const transport = new StdioClientTransport({
       command: "npx",
-      args: ["--no-install", "@makingchatbots/genesys-cloud-mcp-server"],
+      args: ["--no-install", "@solutif/genesys-cloud-mcp-server"],
       env: {
         PATH: process.env.PATH ?? "",
       },

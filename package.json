@@ -1,24 +1,13 @@
 {
-  "name": "@makingchatbots/genesys-cloud-mcp-server",
-  "version": "1.0.4",
-  "description": "A Model Context Protocol (MCP) server exposing Genesys Cloud tools for LLMs, including sentiment analysis, conversation search, topic detection and more.",
+  "name": "@solutif/genesys-cloud-mcp-server",
+  "version": "0.1.0",
+  "description": "Solutif's Model Context Protocol server for Genesys Cloud.",
   "bin": {
-    "genesys-cloud-mcp-server": "dist/cli.js"
+    "solutif-genesys-cloud-mcp-server": "dist/cli.js"
   },
   "type": "module",
   "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/MakingChatbots/genesys-cloud-mcp-server.git"
-  },
-  "bugs": {
-    "url": "https://github.com/MakingChatbots/genesys-cloud-mcp-server/issues"
-  },
-  "homepage": "https://makingchatbots.com",
-  "author": {
-    "name": "Lucas Woodward",
-    "url": "https://makingchatbots.com"
-  },
+  "author": "Solutif",
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "start": "tsx src/index.ts",
@@ -29,7 +18,7 @@
     "build": "npm run clean && npm run build:esm && chmod +x dist/cli.js",
     "validate:mcpb": "mcpb validate manifest.json",
     "clean:mcpb": "npm run clean && rm -rf mcpb-contents/*",
-    "deps:mcpb": "cp manifest.json package.json package-lock.json mcpb-contents/ && cd mcpb-contents && npm ci --omit=dev && rm package-lock.json",
+    "deps:mcpb": "cp LICENSE manifest.json package.json package-lock.json mcpb-contents/ && cd mcpb-contents && npm ci --omit=dev && rm package-lock.json",
     "package:mcpb": "npm run clean:mcpb && npm run build:esm:mcpb && npm run deps:mcpb && mcpb pack mcpb-contents genesys-cloud-mcp-server.mcpb",
     "lint:fix": "biome check --write",
     "lint:check": "biome check",

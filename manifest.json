@@ -1,15 +1,12 @@
 {
   "manifest_version": "0.2",
-  "name": "Genesys Cloud MCP Server",
-  "version": "1.0.4",
-  "description": "Interact with Genesys Cloud's Platform API",
-  "long_description": "This extension allows Claude to connect to Genesys Cloud's Platform API via a local MCP server. It provides tools for querying queue volumes, retrieving conversation samples, analyzing sentiment and voice quality, accessing transcripts, and more.\n\nThis project is not affiliated with Genesys.",
+  "name": "Solutif Genesys Cloud MCP Server",
+  "version": "0.1.0",
+  "description": "Solutif's MCP server for Genesys Cloud",
+  "long_description": "Connects Claude to Genesys Cloud's Platform API for queue administration and conversation analytics. Queue creation is opt-in and requires per-call approval in the MCP client.\n\nThis project is not affiliated with Genesys.",
   "author": {
-    "name": "Lucas Woodward",
-    "url": "https://github.com/SketchingDev"
+    "name": "Solutif"
   },
-  "documentation": "https://github.com/MakingChatbots/genesys-cloud-mcp-server#readme",
-  "support": "https://github.com/MakingChatbots/genesys-cloud-mcp-server/issues",
   "server": {
     "type": "node",
     "entry_point": "dist/index.js",
@@ -19,11 +16,16 @@
       "env": {
         "GENESYSCLOUD_REGION": "${user_config.genesys_cloud_region}",
         "GENESYSCLOUD_OAUTHCLIENT_ID": "${user_config.genesys_cloud_oauth_client_id}",
-        "GENESYSCLOUD_OAUTHCLIENT_SECRET": "${user_config.genesys_cloud_oauth_client_secret}"
+        "GENESYSCLOUD_OAUTHCLIENT_SECRET": "${user_config.genesys_cloud_oauth_client_secret}",
+        "GENESYSCLOUD_ENABLE_QUEUE_CREATION": "${user_config.enable_queue_creation}"
       }
     }
   },
   "tools": [
+    {
+      "name": "create_queue",
+      "description": "Creates a Genesys Cloud routing queue after checking for a duplicate name. This tool is only registered when queue creation is enabled."
+    },
     {
       "name": "search_queues",
       "description": "Searches for routing queues based on their name, allowing for wildcard searches. Returns a paginated list of matching queues, including their Name, ID, Description (if available), and Member Count (if available). Also provides pagination details like current page, page size, total results found, and total pages available. Useful for finding specific queue IDs, checking queue configurations, or listing available queues."
@@ -86,6 +88,14 @@
       "description": "Secret for the OAuth Client in your Genesys Cloud Organization",
       "required": true,
       "sensitive": true
+    },
+    "enable_queue_creation": {
+      "type": "boolean",
+      "title": "Enable queue creation",
+      "description": "Expose the create_queue write tool. Do not auto-approve this tool in the MCP client.",
+      "required": false,
+      "default": false,
+      "sensitive": false
     }
   },
   "compatibility": {
@@ -103,9 +113,5 @@
   "license": "MIT",
   "privacy_policies": [
     "https://www.genesys.com/en-gb/company/legal/privacy-policy"
-  ],
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/MakingChatbots/genesys-cloud-mcp-server.git"
-  }
+  ]
 }

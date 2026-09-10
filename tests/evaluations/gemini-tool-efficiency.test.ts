@@ -3,7 +3,7 @@ import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
 import type { CallToolRequest } from "@modelcontextprotocol/sdk/types.js";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
-import type { SearchQueuesResponse } from "../../src/tools/searchQueues.js";
+import type { SearchQueuesResponse } from "../../src/tools/searchQueues/searchQueues.js";
 import {
   type CallToolInterception,
   type CallToolResult,

@@ -7,6 +7,7 @@ import { createConfigRetriever } from "./createConfigRetriever.js";
 import { conversationSentiment } from "./tools/conversationSentiment/conversationSentiment.js";
 import { conversationTopics } from "./tools/conversationTopics/conversationTopics.js";
 import { conversationTranscription } from "./tools/conversationTranscription/conversationTranscription.js";
+import { createQueue } from "./tools/createQueue/createQueue.js";
 import { oauthClients } from "./tools/oauthClients/oauthClients.js";
 import {
   type OAuthClientUsageResponse,
@@ -14,8 +15,8 @@ import {
 } from "./tools/oauthClientUsage/oauthClientUsage.js";
 import { queryQueueVolumes } from "./tools/queryQueueVolumes/queryQueueVolumes.js";
 import { sampleConversationsByQueue } from "./tools/sampleConversationsByQueue/sampleConversationsByQueue.js";
-import { searchQueues } from "./tools/searchQueues.js";
-import { searchVoiceConversations } from "./tools/searchVoiceConversations.js";
+import { searchQueues } from "./tools/searchQueues/searchQueues.js";
+import { searchVoiceConversations } from "./tools/searchVoiceConversations/searchVoiceConversations.js";
 import { voiceCallQuality } from "./tools/voiceCallQuality/voiceCallQuality.js";
 
 const withAuth = OAuthClientCredentialsWrapper(
@@ -24,8 +25,8 @@ const withAuth = OAuthClientCredentialsWrapper(
 );
 
 const server: McpServer = new McpServer({
-  name: "Genesys Cloud",
-  version: "1.0.4", // Same version as version in package.json
+  name: "Solutif Genesys Cloud",
+  version: "0.1.0", // Same version as version in package.json
 });
 
 const cache = new LRUCache<string, OAuthClientUsageResponse>({
@@ -44,6 +45,19 @@ const speechTextAnalyticsApi = new platformClient.SpeechTextAnalyticsApi();
 const recordingApi = new platformClient.RecordingApi();
 const oauthApi = new platformClient.OAuthApi();
 const authorizationApi = new platformClient.AuthorizationApi();
+
+if (process.env.GENESYSCLOUD_ENABLE_QUEUE_CREATION === "true") {
+  const createQueueTool = createQueue({ routingApi });
+  server.registerTool(
+    createQueueTool.schema.name,
+    {
+      description: createQueueTool.schema.description,
+      inputSchema: createQueueTool.schema.paramsSchema.shape,
+      annotations: createQueueTool.schema.annotations,
+    },
+    withAuth(createQueueTool.call),
+  );
+}
 
 const searchQueuesTool = searchQueues({ routingApi });
 server.registerTool(
@@ -176,4 +190,4 @@ server.registerTool(
 
 const transport = new StdioServerTransport();
 await server.connect(transport);
-console.error("Genesys Cloud MCP Server running on stdio");
+console.error("Solutif Genesys Cloud MCP Server running on stdio");
