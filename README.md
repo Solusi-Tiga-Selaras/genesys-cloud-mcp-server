@@ -52,6 +52,30 @@ The server is read-only by default. To expose `create_queue`, add:
 
 The OAuth client then needs `routing:queue:add` and `routing:queue:view`. Keep `create_queue` out of the MCP client's auto-approved tools so every write requires user approval.
 
+## Remote Streamable HTTP
+
+The default transport remains `stdio`. To expose the same tools through a
+stateless Streamable HTTP endpoint:
+
+```bash
+HOST=0.0.0.0 \
+PORT=3000 \
+MCP_ALLOWED_HOSTS=mcp.example.com \
+GENESYSCLOUD_REGION=<REGION> \
+GENESYSCLOUD_OAUTHCLIENT_ID=<OAUTH_CLIENT_ID> \
+GENESYSCLOUD_OAUTHCLIENT_SECRET=<OAUTH_CLIENT_SECRET> \
+npm run start:http
+```
+
+The MCP endpoint is `/mcp` and the health endpoint is `/health`. Terminate TLS
+at a reverse proxy so clients connect through a valid HTTPS URL such as
+`https://mcp.example.com/mcp`. `MCP_ALLOWED_HOSTS` accepts comma-separated host
+names and is required when listening outside localhost.
+
+The HTTP transport does not provide user authentication. Keep it private for
+development or place it behind an MCP-compatible OAuth layer before exposing
+company credentials on the public internet.
+
 ## MCP Bundle
 
 ```bash
