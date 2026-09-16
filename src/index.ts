@@ -8,6 +8,7 @@ import { conversationSentiment } from "./tools/conversationSentiment/conversatio
 import { conversationTopics } from "./tools/conversationTopics/conversationTopics.js";
 import { conversationTranscription } from "./tools/conversationTranscription/conversationTranscription.js";
 import { createQueue } from "./tools/createQueue/createQueue.js";
+import { getConversationJourney } from "./tools/getConversationJourney/getConversationJourney.js";
 import { oauthClients } from "./tools/oauthClients/oauthClients.js";
 import {
   type OAuthClientUsageResponse,
@@ -45,6 +46,17 @@ const speechTextAnalyticsApi = new platformClient.SpeechTextAnalyticsApi();
 const recordingApi = new platformClient.RecordingApi();
 const oauthApi = new platformClient.OAuthApi();
 const authorizationApi = new platformClient.AuthorizationApi();
+
+const getConversationJourneyTool = getConversationJourney({ analyticsApi });
+server.registerTool(
+  getConversationJourneyTool.schema.name,
+  {
+    description: getConversationJourneyTool.schema.description,
+    inputSchema: getConversationJourneyTool.schema.paramsSchema.shape,
+    annotations: getConversationJourneyTool.schema.annotations,
+  },
+  withAuth(getConversationJourneyTool.call),
+);
 
 if (process.env.GENESYSCLOUD_ENABLE_QUEUE_CREATION === "true") {
   const createQueueTool = createQueue({ routingApi });

@@ -7,6 +7,7 @@ Solutif's MCP server for Genesys Cloud Platform API operations and analytics.
 | Tool | Description |
 |---|---|
 | [`create_queue`](docs/tools.md#create-queue) | Creates a queue after checking for a duplicate name |
+| [`get_conversation_journey`](docs/tools.md#get-conversation-journey) | Retrieves a chronological conversation journey |
 | [`search_queues`](docs/tools.md#search-queues) | Searches queues by name |
 | [`query_queue_volumes`](docs/tools.md#query-queue-volumes) | Retrieves queue conversation volumes |
 | [`sample_conversations_by_queue`](docs/tools.md#sample-conversations-by-queue) | Samples conversations from a queue |
@@ -66,5 +67,10 @@ npm run lint:check
 npm run build
 npm test -- --run
 ```
+
+## Roadmap
+
+See the [tool roadmap](docs/plans/README.md) for the planned operational and
+queue-management tools.
 
 Based on the MIT-licensed [MakingChatbots Genesys Cloud MCP Server](https://github.com/MakingChatbots/genesys-cloud-mcp-server).

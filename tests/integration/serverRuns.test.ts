@@ -37,6 +37,7 @@ describe("Server Runs", () => {
 
     const { tools } = await client.listTools();
     expect(tools.map(({ name }) => name)).toStrictEqual([
+      "get_conversation_journey",
       "search_queues",
       "sample_conversations_by_queue",
       "query_queue_volumes",

@@ -28,6 +28,32 @@ Platform API endpoints used:
 - `GET /api/v2/routing/queues`
 - `POST /api/v2/routing/queues`
 
+## Get Conversation Journey
+
+**Tool name:** `get_conversation_journey`
+
+Retrieves participants, sessions, and chronologically ordered segments for one
+conversation. It also returns the sum of the `nTransferred` session metric as
+`transferCount` and the sum of `tQueue` as `totalQueueWaitMs`. The tool exposes
+Genesys facts and does not infer a narrative cause.
+
+[Source file](/src/tools/getConversationJourney/getConversationJourney.ts).
+
+### Input
+
+- `conversationId`
+  - The UUID of the conversation to retrieve
+
+### Security
+
+Required permission:
+
+- `analytics:conversationDetail:view`
+
+Platform API endpoint used:
+
+- `GET /api/v2/analytics/conversations/{conversationId}/details`
+
 ## Search Queues
 
 **Tool name:** `search_queues`
