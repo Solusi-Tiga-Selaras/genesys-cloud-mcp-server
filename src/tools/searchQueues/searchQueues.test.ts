@@ -50,7 +50,13 @@ describe("Search Queues Tool", () => {
       name: "search_queues",
       title: undefined,
       _meta: undefined,
-      annotations: { title: "Search Queues" },
+      annotations: {
+        title: "Search Queues",
+        readOnlyHint: true,
+        destructiveHint: false,
+        idempotentHint: true,
+        openWorldHint: false,
+      },
       description:
         "Searches for routing queues based on their name, allowing for wildcard searches. Returns a paginated list of matching queues, including their Name, ID, Description (if available), and Member Count (if available). Also provides pagination details like current page, page size, total results found, and total pages available. Useful for finding specific queue IDs, checking queue configurations, or listing available queues.",
       execution: { taskSupport: "forbidden" },

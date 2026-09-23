@@ -48,7 +48,13 @@ describe("Search Voice Conversations Tool", () => {
       name: "search_voice_conversations",
       title: undefined,
       _meta: undefined,
-      annotations: { title: "Search Voice Conversations" },
+      annotations: {
+        title: "Search Voice Conversations",
+        readOnlyHint: true,
+        destructiveHint: false,
+        idempotentHint: true,
+        openWorldHint: false,
+      },
       description:
         "Searches for voice conversations within a specified time window, optionally filtering by phone number. Returns a paginated list of conversation IDs and call duration for use in further analysis or tool calls.",
       execution: { taskSupport: "forbidden" },

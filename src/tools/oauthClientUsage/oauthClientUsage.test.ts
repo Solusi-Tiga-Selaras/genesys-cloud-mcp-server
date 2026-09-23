@@ -51,7 +51,13 @@ describe("OAuth Client Usage", () => {
       name: "oauth_client_usage",
       title: undefined,
       _meta: undefined,
-      annotations: { title: "OAuth Client Usage" },
+      annotations: {
+        title: "OAuth Client Usage",
+        readOnlyHint: true,
+        destructiveHint: false,
+        idempotentHint: true,
+        openWorldHint: false,
+      },
       description:
         "Retrieves the usage of an OAuth Client for a given period. It returns the total number of requests and a breakdown of Platform API endpoints used by the client.",
       execution: { taskSupport: "forbidden" },

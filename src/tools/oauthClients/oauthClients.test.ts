@@ -51,6 +51,10 @@ describe("List OAuth Clients", () => {
       _meta: undefined,
       annotations: {
         title: "List OAuth Clients",
+        readOnlyHint: true,
+        destructiveHint: false,
+        idempotentHint: true,
+        openWorldHint: false,
       },
       description:
         "Retrieves a list of all OAuth clients, including their associated roles and divisions. This tool is useful for auditing and managing OAuth clients in the Genesys Cloud organization.",

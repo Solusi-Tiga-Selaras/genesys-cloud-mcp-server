@@ -57,7 +57,13 @@ describe("Conversation Topics Tool", () => {
       name: "conversation_topics",
       title: undefined,
       _meta: undefined,
-      annotations: { title: "Conversation Topics" },
+      annotations: {
+        title: "Conversation Topics",
+        readOnlyHint: true,
+        destructiveHint: false,
+        idempotentHint: true,
+        openWorldHint: false,
+      },
       description:
         "Retrieves Speech and Text Analytics topics detected for a specific conversation. Topics represent business-level intents (e.g. cancellation, billing enquiry) inferred from recognised phrases in the customer-agent interaction.",
       execution: { taskSupport: "forbidden" },

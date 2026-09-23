@@ -55,7 +55,13 @@ describe("Query Queue Volumes Tool", () => {
       name: "sample_conversations_by_queue",
       title: undefined,
       _meta: undefined,
-      annotations: { title: "Sample Conversations by Queue" },
+      annotations: {
+        title: "Sample Conversations by Queue",
+        readOnlyHint: true,
+        destructiveHint: false,
+        idempotentHint: true,
+        openWorldHint: false,
+      },
       description:
         "Retrieves conversation analytics for a specific queue between two dates, returning a representative sample of conversation IDs. Useful for reporting, investigation, or summarisation.",
       execution: { taskSupport: "forbidden" },

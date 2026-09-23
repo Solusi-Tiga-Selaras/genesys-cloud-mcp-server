@@ -54,7 +54,13 @@ describe("Conversation Transcription Tool", () => {
       name: "conversation_transcript",
       title: undefined,
       _meta: undefined,
-      annotations: { title: "Conversation Transcript" },
+      annotations: {
+        title: "Conversation Transcript",
+        readOnlyHint: true,
+        destructiveHint: false,
+        idempotentHint: true,
+        openWorldHint: false,
+      },
       description:
         "Retrieves a structured transcript of the conversation, including speaker labels, utterance timestamps, and sentiment annotations where available. The transcript is formatted as a time-aligned list of utterances attributed to each participant (e.g., customer or agent)",
       execution: { taskSupport: "forbidden" },

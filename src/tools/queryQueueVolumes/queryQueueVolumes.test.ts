@@ -55,7 +55,13 @@ describe("Query Queue Volumes Tool", () => {
       name: "query_queue_volumes",
       title: undefined,
       _meta: undefined,
-      annotations: { title: "Query Queue Volumes" },
+      annotations: {
+        title: "Query Queue Volumes",
+        readOnlyHint: true,
+        destructiveHint: false,
+        idempotentHint: true,
+        openWorldHint: false,
+      },
       description:
         "Returns a breakdown of how many conversations occurred in each specified queue between two dates. Useful for comparing workload across queues. MAX 300 queue IDs.",
       execution: { taskSupport: "forbidden" },

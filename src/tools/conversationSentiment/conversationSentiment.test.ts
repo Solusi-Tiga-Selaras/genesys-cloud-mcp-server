@@ -53,7 +53,13 @@ describe("Conversation Sentiment Tool", () => {
       name: "conversation_sentiment",
       title: undefined,
       _meta: undefined,
-      annotations: { title: "Conversation Sentiment" },
+      annotations: {
+        title: "Conversation Sentiment",
+        readOnlyHint: true,
+        destructiveHint: false,
+        idempotentHint: true,
+        openWorldHint: false,
+      },
       description:
         "Retrieves sentiment analysis scores for one or more conversations. Sentiment is evaluated based on customer phrases, categorized as positive, neutral, or negative. The result includes both a numeric sentiment score (-100 to 100) and an interpreted sentiment label.",
       execution: { taskSupport: "forbidden" },

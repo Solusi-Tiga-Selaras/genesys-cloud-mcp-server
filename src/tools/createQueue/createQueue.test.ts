@@ -3,6 +3,21 @@ import { describe, expect, test, vi } from "vitest";
 import { createQueue } from "./createQueue.js";
 
 describe("Create Queue Tool", () => {
+  test("advertises a non-destructive write", () => {
+    const routingApi = {
+      getRoutingQueues: vi.fn(),
+      postRoutingQueues: vi.fn(),
+    };
+
+    expect(createQueue({ routingApi }).schema.annotations).toStrictEqual({
+      title: "Create Queue",
+      readOnlyHint: false,
+      destructiveHint: false,
+      idempotentHint: false,
+      openWorldHint: false,
+    });
+  });
+
   test("does not duplicate an existing queue", async () => {
     const queueId = randomUUID();
     const routingApi = {

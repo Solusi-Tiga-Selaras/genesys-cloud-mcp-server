@@ -35,8 +35,10 @@ export const createQueue: ToolFactory<
       name: "create_queue",
       annotations: {
         title: "Create Queue",
-        destructiveHint: true,
+        readOnlyHint: false,
+        destructiveHint: false,
         idempotentHint: false,
+        openWorldHint: false,
       },
       description:
         "Creates a Genesys Cloud routing queue. First checks for an existing queue with the same name. Requires routing:queue:add and routing:queue:view permissions, and GENESYSCLOUD_ENABLE_QUEUE_CREATION=true.",

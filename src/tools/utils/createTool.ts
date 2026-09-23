@@ -27,5 +27,17 @@ export type ToolFactory<Deps, Schema extends z.ZodType> = (
 export function createTool<Schema extends z.ZodType>(
   tool: ToolDefinition<Schema>,
 ): ToolDefinition<Schema> {
-  return tool;
+  return {
+    ...tool,
+    schema: {
+      ...tool.schema,
+      annotations: {
+        readOnlyHint: true,
+        destructiveHint: false,
+        idempotentHint: true,
+        openWorldHint: false,
+        ...tool.schema.annotations,
+      },
+    },
+  };
 }
