@@ -41,6 +41,8 @@ sentiment, topic, and call-quality tools.
 
 ### 2. `get_queue_health`
 
+Status: Implemented.
+
 Answers which queues currently need attention.
 
 **Inputs**

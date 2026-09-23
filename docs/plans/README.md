@@ -16,7 +16,7 @@ operations assistant without exposing the entire Platform API to an LLM.
 
 | Phase | Outcome | Tools | Status |
 |---|---|---|---|
-| [Phase 1](phase-1-operational-insights.md) | Support investigation, supervisor insights, reporting, and resource discovery | `get_conversation_journey`, `get_queue_health`, `get_queue_performance`, `get_queue_members`, `search_users`, `search_divisions` | In progress (1/6) |
+| [Phase 1](phase-1-operational-insights.md) | Support investigation, supervisor insights, reporting, and resource discovery | `get_conversation_journey`, `get_queue_health`, `get_queue_performance`, `get_queue_members`, `search_users`, `search_divisions` | In progress (2/6) |
 | [Phase 2](phase-2-controlled-actions.md) | Cross-channel search and controlled queue membership changes | `search_conversations`, `manage_queue_members` | Planned |
 
 No delivery dates are assigned. Each tool should be implemented and released
@@ -26,7 +26,8 @@ independently when its workflow has a real consumer.
 
 The current server already provides:
 
-- Queue discovery, volume queries, and representative conversation sampling.
+- Queue discovery, real-time health, volume queries, and representative
+  conversation sampling.
 - Voice conversation search, transcripts, sentiment, topics, and call quality.
 - OAuth client inventory and usage.
 - Guarded queue creation.
@@ -40,7 +41,7 @@ and approval UX.
 | Use case | Tool chain |
 |---|---|
 | Support investigation | `search_voice_conversations` or planned `search_conversations` -> `get_conversation_journey` -> `voice_call_quality` -> `conversation_transcript` |
-| Supervisor assistant | Planned `get_queue_health` -> planned `get_queue_members` |
+| Supervisor assistant | `get_queue_health` -> planned `get_queue_members` |
 | Quality assurance | `sample_conversations_by_queue` -> `conversation_transcript` -> `conversation_topics` -> `conversation_sentiment` -> `voice_call_quality` |
 | Queue reporting | Planned `get_queue_performance` plus `query_queue_volumes` |
 | Queue provisioning | Planned `search_divisions` -> `search_queues` -> `create_queue` -> planned `search_users` -> planned `manage_queue_members` |

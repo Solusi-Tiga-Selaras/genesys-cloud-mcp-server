@@ -146,6 +146,31 @@ Platform API endpoints used:
 - [`GET /api/v2/analytics/conversations/details/jobs/{jobId}`](https://developer.genesys.cloud/analyticsdatamanagement/analytics/analytics-apis#get-api-v2-analytics-conversations-details-jobs--jobId-)
 - [`GET /api/v2/analytics/conversations/details/jobs/{jobId}/results`](https://developer.genesys.cloud/analyticsdatamanagement/analytics/analytics-apis#get-api-v2-analytics-conversations-details-jobs--jobId--results)
 
+## Get Queue Health
+
+**Tool name:** `get_queue_health`
+
+Returns a real-time queue snapshot. Agent availability is the queue-level count
+with the `IDLE` on-queue routing status. Waiting, interacting, and longest-wait
+metrics are returned separately for each media type. Missing metrics are
+returned as `null`, not zero. `longestWaitingMs` is measured in milliseconds.
+
+### Inputs
+
+- `queueIds` (required): One to 100 routing queue UUIDs
+- `mediaTypes` (optional): Any of `voice`, `chat`, `email`, `callback`, and
+  `message`; omitting it returns every media type present in the response
+
+### Security
+
+Required permission:
+
+- `analytics:queueObservation:view`
+
+Platform API endpoint used:
+
+- [`POST /api/v2/analytics/queues/observations/query`](https://developer.genesys.cloud/analyticsdatamanagement/analytics/observation/queue-query)
+
 ## Sample Conversations By Queue
 
 **Tool name:** `sample_conversations_by_queue`

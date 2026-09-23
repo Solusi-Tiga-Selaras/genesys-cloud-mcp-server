@@ -40,6 +40,7 @@ describe("Server Runs", () => {
       "search_genesys_cloud_docs",
       "get_conversation_journey",
       "search_queues",
+      "get_queue_health",
       "sample_conversations_by_queue",
       "query_queue_volumes",
       "voice_call_quality",

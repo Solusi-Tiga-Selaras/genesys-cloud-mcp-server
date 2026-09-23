@@ -8,6 +8,7 @@ import { conversationTopics } from "./tools/conversationTopics/conversationTopic
 import { conversationTranscription } from "./tools/conversationTranscription/conversationTranscription.js";
 import { createQueue } from "./tools/createQueue/createQueue.js";
 import { getConversationJourney } from "./tools/getConversationJourney/getConversationJourney.js";
+import { getQueueHealth } from "./tools/getQueueHealth/getQueueHealth.js";
 import { oauthClients } from "./tools/oauthClients/oauthClients.js";
 import {
   type OAuthClientUsageResponse,
@@ -110,6 +111,17 @@ export function createMcpServer(): McpServer {
       annotations: searchQueuesTool.schema.annotations,
     },
     withAuth(searchQueuesTool.call),
+  );
+
+  const getQueueHealthTool = getQueueHealth({ analyticsApi });
+  server.registerTool(
+    getQueueHealthTool.schema.name,
+    {
+      description: getQueueHealthTool.schema.description,
+      inputSchema: getQueueHealthTool.schema.paramsSchema.shape,
+      annotations: getQueueHealthTool.schema.annotations,
+    },
+    withAuth(getQueueHealthTool.call),
   );
 
   const sampleConversationsByQueueTool = sampleConversationsByQueue({

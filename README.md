@@ -11,6 +11,7 @@ Solutif's MCP server for Genesys Cloud Platform API operations and analytics.
 | [`create_queue`](docs/tools.md#create-queue) | Creates a queue after checking for a duplicate name |
 | [`get_conversation_journey`](docs/tools.md#get-conversation-journey) | Retrieves a chronological conversation journey |
 | [`search_queues`](docs/tools.md#search-queues) | Searches queues by name |
+| [`get_queue_health`](docs/tools.md#get-queue-health) | Retrieves real-time queue and media health |
 | [`query_queue_volumes`](docs/tools.md#query-queue-volumes) | Retrieves queue conversation volumes |
 | [`sample_conversations_by_queue`](docs/tools.md#sample-conversations-by-queue) | Samples conversations from a queue |
 | [`voice_call_quality`](docs/tools.md#voice-call-quality) | Retrieves voice quality metrics |

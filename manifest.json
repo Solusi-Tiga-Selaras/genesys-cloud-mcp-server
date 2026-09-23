@@ -43,6 +43,10 @@
       "description": "Searches for routing queues based on their name, allowing for wildcard searches. Returns a paginated list of matching queues, including their Name, ID, Description (if available), and Member Count (if available). Also provides pagination details like current page, page size, total results found, and total pages available. Useful for finding specific queue IDs, checking queue configurations, or listing available queues."
     },
     {
+      "name": "get_queue_health",
+      "description": "Returns a real-time snapshot of queue health, including available agents and waiting, interacting, and longest-wait metrics by media type."
+    },
+    {
       "name": "query_queue_volumes",
       "description": "Returns a breakdown of how many conversations occurred in each specified queue between two dates. Useful for comparing workload across queues."
     },
