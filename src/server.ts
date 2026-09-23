@@ -15,6 +15,8 @@ import {
 } from "./tools/oauthClientUsage/oauthClientUsage.js";
 import { queryQueueVolumes } from "./tools/queryQueueVolumes/queryQueueVolumes.js";
 import { sampleConversationsByQueue } from "./tools/sampleConversationsByQueue/sampleConversationsByQueue.js";
+import { searchGenesysCloudDeveloperForum } from "./tools/searchGenesysCloudDeveloperForum/searchGenesysCloudDeveloperForum.js";
+import { searchGenesysCloudDocs } from "./tools/searchGenesysCloudDocs/searchGenesysCloudDocs.js";
 import { searchQueues } from "./tools/searchQueues/searchQueues.js";
 import { searchVoiceConversations } from "./tools/searchVoiceConversations/searchVoiceConversations.js";
 import { voiceCallQuality } from "./tools/voiceCallQuality/voiceCallQuality.js";
@@ -44,6 +46,36 @@ export function createMcpServer(): McpServer {
     name: "Solutif Genesys Cloud",
     version: "0.1.0", // Same version as version in package.json
   });
+
+  const searchGenesysCloudDocsTool = searchGenesysCloudDocs({
+    fetchUrl: fetch,
+  });
+  server.registerTool(
+    searchGenesysCloudDocsTool.schema.name,
+    {
+      description: searchGenesysCloudDocsTool.schema.description,
+      inputSchema: searchGenesysCloudDocsTool.schema.paramsSchema.shape,
+      annotations: searchGenesysCloudDocsTool.schema.annotations,
+    },
+    searchGenesysCloudDocsTool.call,
+  );
+
+  const firecrawlApiKey = process.env.FIRECRAWL_API_KEY?.trim();
+  if (firecrawlApiKey) {
+    const searchDeveloperForumTool = searchGenesysCloudDeveloperForum({
+      apiKey: firecrawlApiKey,
+      fetchUrl: fetch,
+    });
+    server.registerTool(
+      searchDeveloperForumTool.schema.name,
+      {
+        description: searchDeveloperForumTool.schema.description,
+        inputSchema: searchDeveloperForumTool.schema.paramsSchema.shape,
+        annotations: searchDeveloperForumTool.schema.annotations,
+      },
+      searchDeveloperForumTool.call,
+    );
+  }
 
   const getConversationJourneyTool = getConversationJourney({ analyticsApi });
   server.registerTool(

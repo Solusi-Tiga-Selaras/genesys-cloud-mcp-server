@@ -1,5 +1,42 @@
 # Tools
 
+## Search Genesys Cloud Docs
+
+**Tool name:** `search_genesys_cloud_docs`
+
+Searches the public Genesys Cloud Developer Center and Resource Center and
+returns relevant titles, links, excerpts, document types, topics, and source.
+This tool does not require Genesys Cloud organisation credentials.
+
+### Inputs
+
+- `query` (required): Search terms between 2 and 60 characters
+- `source` (optional): `developer-center`, `resource-center`, or `all`; defaults
+  to `all`
+- `limit` (optional): Maximum results to return, from 1 to 10; defaults to 5
+
+Public endpoint used:
+
+- `POST https://developer.genesys.cloud/search`
+
+## Search Genesys Cloud Developer Forum
+
+**Tool name:** `search_genesys_cloud_developer_forum`
+
+Searches public Genesys Cloud Developer Community discussions through
+Firecrawl. This tool is only registered when `FIRECRAWL_API_KEY` is set.
+Search terms are sent to Firecrawl, and results are restricted to discussion
+pages on `community.genesys.com`.
+
+### Inputs
+
+- `query` (required): Search terms between 2 and 200 characters
+- `limit` (optional): Maximum results to return, from 1 to 10; defaults to 5
+
+Public endpoint used:
+
+- `POST https://api.firecrawl.dev/v2/search`
+
 ## Create Queue
 
 Tool name: `create_queue`

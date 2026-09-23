@@ -20,11 +20,20 @@
         "GENESYSCLOUD_REGION": "${user_config.genesys_cloud_region}",
         "GENESYSCLOUD_OAUTHCLIENT_ID": "${user_config.genesys_cloud_oauth_client_id}",
         "GENESYSCLOUD_OAUTHCLIENT_SECRET": "${user_config.genesys_cloud_oauth_client_secret}",
-        "GENESYSCLOUD_ENABLE_QUEUE_CREATION": "${user_config.enable_queue_creation}"
+        "GENESYSCLOUD_ENABLE_QUEUE_CREATION": "${user_config.enable_queue_creation}",
+        "FIRECRAWL_API_KEY": "${user_config.firecrawl_api_key}"
       }
     }
   },
   "tools": [
+    {
+      "name": "search_genesys_cloud_docs",
+      "description": "Searches public Genesys Cloud Developer Center and Resource Center documentation."
+    },
+    {
+      "name": "search_genesys_cloud_developer_forum",
+      "description": "Searches public Genesys Cloud Developer Community discussions through Firecrawl. This tool is only registered when a Firecrawl API key is configured."
+    },
     {
       "name": "create_queue",
       "description": "Creates a Genesys Cloud routing queue after checking for a duplicate name. This tool is only registered when queue creation is enabled."
@@ -99,6 +108,13 @@
       "required": false,
       "default": false,
       "sensitive": false
+    },
+    "firecrawl_api_key": {
+      "type": "string",
+      "title": "Firecrawl API Key",
+      "description": "Optional API key that enables Genesys Cloud Developer Forum search.",
+      "required": false,
+      "sensitive": true
     }
   },
   "compatibility": {

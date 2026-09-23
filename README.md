@@ -6,6 +6,8 @@ Solutif's MCP server for Genesys Cloud Platform API operations and analytics.
 
 | Tool | Description |
 |---|---|
+| [`search_genesys_cloud_docs`](docs/tools.md#search-genesys-cloud-docs) | Searches public Genesys Cloud developer and product documentation |
+| [`search_genesys_cloud_developer_forum`](docs/tools.md#search-genesys-cloud-developer-forum) | Searches Developer Community discussions when Firecrawl is configured |
 | [`create_queue`](docs/tools.md#create-queue) | Creates a queue after checking for a duplicate name |
 | [`get_conversation_journey`](docs/tools.md#get-conversation-journey) | Retrieves a chronological conversation journey |
 | [`search_queues`](docs/tools.md#search-queues) | Searches queues by name |
@@ -51,6 +53,15 @@ The server is read-only by default. To expose `create_queue`, add:
 ```
 
 The OAuth client then needs `routing:queue:add` and `routing:queue:view`. Keep `create_queue` out of the MCP client's auto-approved tools so every write requires user approval.
+
+To expose `search_genesys_cloud_developer_forum`, optionally add:
+
+```json
+"FIRECRAWL_API_KEY": "<FIRECRAWL_API_KEY>"
+```
+
+Forum search queries are sent to Firecrawl. Without this variable, the forum
+search tool is not registered.
 
 ## Remote Streamable HTTP
 

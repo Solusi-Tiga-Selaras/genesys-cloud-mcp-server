@@ -37,6 +37,7 @@ describe("Server Runs", () => {
 
     const { tools } = await client.listTools();
     expect(tools.map(({ name }) => name)).toStrictEqual([
+      "search_genesys_cloud_docs",
       "get_conversation_journey",
       "search_queues",
       "sample_conversations_by_queue",
@@ -66,6 +67,25 @@ describe("Server Runs", () => {
 
     const { tools } = await client.listTools();
     expect(tools.map(({ name }) => name)).toContain("create_queue");
+  });
+
+  test("server exposes forum search only when Firecrawl is configured", async () => {
+    const transport = new StdioClientTransport({
+      command: "node",
+      args: [join(__dirname, "../../dist/index.js")],
+      env: {
+        PATH: process.env.PATH ?? "",
+        FIRECRAWL_API_KEY: "test-key",
+      },
+    });
+
+    client = new Client({ name: "test-client", version: "0.1.0" });
+    await client.connect(transport);
+
+    const { tools } = await client.listTools();
+    expect(tools.map(({ name }) => name)).toContain(
+      "search_genesys_cloud_developer_forum",
+    );
   });
 
   test("server version matches version in package.json", async () => {
