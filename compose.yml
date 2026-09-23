@@ -1,0 +1,17 @@
+services:
+  mcp:
+    build: .
+    image: solutif/genesys-cloud-mcp-server:local
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:3000:3000"
+    environment:
+      MCP_TRANSPORT: http
+      HOST: 0.0.0.0
+      PORT: 3000
+      MCP_ALLOWED_HOSTS: localhost,127.0.0.1
+      GENESYSCLOUD_REGION: ${GENESYSCLOUD_REGION:?required}
+      GENESYSCLOUD_OAUTHCLIENT_ID: ${GENESYSCLOUD_OAUTHCLIENT_ID:?required}
+      GENESYSCLOUD_OAUTHCLIENT_SECRET: ${GENESYSCLOUD_OAUTHCLIENT_SECRET:?required}
+      GENESYSCLOUD_ENABLE_QUEUE_CREATION: ${GENESYSCLOUD_ENABLE_QUEUE_CREATION:-false}
+      FIRECRAWL_API_KEY: ${FIRECRAWL_API_KEY:-}
