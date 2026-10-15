@@ -37,11 +37,16 @@
     "test:pack": "npm run build && npm pack --pack-destination ./dist"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.29.0",
+    "@modelcontextprotocol/sdk": "^1.32.1",
     "date-fns": "^4.1.0",
     "lru-cache": "^11.2.7",
     "purecloud-platform-client-v2": "^249.1.0",
     "zod": "^4.3.6"
+  },
+  "overrides": {
+    "fast-uri": "^3.1.8",
+    "ip-address": "^10.7.4",
+    "proxy-addr": "^2.0.8"
   },
   "devDependencies": {
     "@anthropic-ai/mcpb": "^2.1.2",

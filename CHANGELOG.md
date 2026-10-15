@@ -24,6 +24,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Exclude environment files, client profile credentials, and Git metadata from
   Docker build contexts.
+- Upgrade the MCP SDK and pin patched transitive dependencies, removing the
+  production dependency audit findings.
 
 ## [0.2.0] - 2026-09-23
 
