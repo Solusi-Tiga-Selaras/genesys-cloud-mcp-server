@@ -1,6 +1,6 @@
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { createHttpServer } from "./http.js";
-import { createMcpServer } from "./server.js";
+import { createMcpServerFactory } from "./server.js";
 
 const transportType = process.env.MCP_TRANSPORT ?? "stdio";
 
@@ -32,7 +32,7 @@ if (transportType === "http") {
     );
   });
 } else if (transportType === "stdio") {
-  const server = createMcpServer();
+  const server = createMcpServerFactory()();
   await server.connect(new StdioServerTransport());
   console.error("Solutif Genesys Cloud MCP Server running on stdio");
 } else {

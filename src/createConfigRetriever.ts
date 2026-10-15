@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { loadConnectionProfiles } from "./connectionProfiles.js";
 
 export interface GenesysCloudConfig {
   readonly region: string;
@@ -34,7 +35,23 @@ const genesysAuthConfigSchema = z.object({
   }),
 });
 
-export function createConfigRetriever(env: NodeJS.ProcessEnv): ConfigRetriever {
+export function createConfigRetriever(
+  env: NodeJS.ProcessEnv,
+  profiles = loadConnectionProfiles(env),
+): ConfigRetriever {
+  if (env.GENESYSCLOUD_PROFILES_FILE || env.GENESYSCLOUD_PROFILE) {
+    const name = env.GENESYSCLOUD_PROFILE;
+    const profile = name ? profiles.get(name) : undefined;
+    const result: Result<GenesysCloudConfig> = profile
+      ? { success: true, value: profile }
+      : {
+          success: false,
+          reason: name
+            ? `Unknown Genesys Cloud profile: ${name}`
+            : "Select a Genesys Cloud profile with GENESYSCLOUD_PROFILE or /mcp/<profile>",
+        };
+    return { getGenesysCloudConfig: () => result };
+  }
   return {
     getGenesysCloudConfig: () => {
       const genesysAuthConfig = genesysAuthConfigSchema.safeParse(env);

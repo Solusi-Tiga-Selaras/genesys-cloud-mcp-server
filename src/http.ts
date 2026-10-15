@@ -3,14 +3,39 @@ import {
   type ServerResponse,
 } from "node:http";
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
-import { createMcpServer } from "./server.js";
+import { loadConnectionProfiles } from "./connectionProfiles.js";
+import { createConfigRetriever } from "./createConfigRetriever.js";
+import { createMcpServerFactory, type McpServerFactory } from "./server.js";
 
 function sendJson(response: ServerResponse, status: number, body: unknown) {
   response.writeHead(status, { "content-type": "application/json" });
   response.end(JSON.stringify(body));
 }
 
-export function createHttpServer(allowedHosts?: string[]) {
+export function createHttpServer(
+  allowedHosts?: string[],
+  env: NodeJS.ProcessEnv = process.env,
+) {
+  const profiles = loadConnectionProfiles(env);
+  const factories = new Map<string, McpServerFactory>();
+  for (const [name] of profiles) {
+    factories.set(
+      name,
+      createMcpServerFactory(
+        createConfigRetriever({ ...env, GENESYSCLOUD_PROFILE: name }, profiles),
+      ),
+    );
+  }
+  const defaultFactory = env.GENESYSCLOUD_PROFILE
+    ? factories.get(env.GENESYSCLOUD_PROFILE)
+    : env.GENESYSCLOUD_PROFILES_FILE
+      ? undefined
+      : createMcpServerFactory(createConfigRetriever(env, profiles));
+  if (env.GENESYSCLOUD_PROFILE && !defaultFactory) {
+    throw new Error(
+      `Unknown Genesys Cloud profile: ${env.GENESYSCLOUD_PROFILE}`,
+    );
+  }
   return createNodeServer(async (request, response) => {
     const requestHost = request.headers.host;
     const requestHostname = requestHost?.replace(/:\d+$/, "");
@@ -30,7 +55,8 @@ export function createHttpServer(allowedHosts?: string[]) {
       return;
     }
 
-    if (path !== "/mcp") {
+    const profileName = path.startsWith("/mcp/") ? path.slice(5) : undefined;
+    if (path !== "/mcp" && !profiles.has(profileName ?? "")) {
       sendJson(response, 404, { error: "Not found" });
       return;
     }
@@ -44,7 +70,14 @@ export function createHttpServer(allowedHosts?: string[]) {
       return;
     }
 
-    const server = createMcpServer();
+    const factory = profileName ? factories.get(profileName) : defaultFactory;
+    if (!factory) {
+      sendJson(response, 400, {
+        error: "Select a profile with /mcp/<profile>",
+      });
+      return;
+    }
+    const server = factory();
     const transport = new StreamableHTTPServerTransport({
       sessionIdGenerator: undefined,
     });

@@ -16,7 +16,7 @@ operations assistant without exposing the entire Platform API to an LLM.
 
 | Phase | Outcome | Tools | Status |
 |---|---|---|---|
-| [Phase 1](phase-1-operational-insights.md) | Support investigation, supervisor insights, reporting, and resource discovery | `get_conversation_journey`, `get_queue_health`, `get_queue_performance`, `get_queue_members`, `search_users`, `search_divisions` | In progress (2/6) |
+| [Phase 1](phase-1-operational-insights.md) | Support investigation, supervisor insights, reporting, and resource discovery | `get_conversation_journey`, `get_queue_health`, `get_queue_performance`, `get_queue_members`, `search_users`, `search_divisions` | In progress (4/6) |
 | [Phase 2](phase-2-controlled-actions.md) | Cross-channel search and controlled queue membership changes | `search_conversations`, `manage_queue_members` | Planned |
 
 No delivery dates are assigned. Each tool should be implemented and released

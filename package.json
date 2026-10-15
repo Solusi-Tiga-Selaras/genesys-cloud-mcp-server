@@ -1,6 +1,6 @@
 {
   "name": "@solutif/genesys-cloud-mcp-server",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Solutif's Model Context Protocol server for Genesys Cloud.",
   "bin": {
     "solutif-genesys-cloud-mcp-server": "dist/cli.js"
@@ -67,6 +67,7 @@
     "!dist/**/*.test.*",
     "LICENSE",
     "README.md",
+    "CHANGELOG.md",
     "package.json"
   ],
   "keywords": [

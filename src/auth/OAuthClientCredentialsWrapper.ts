@@ -4,8 +4,6 @@ import type { ConfigRetriever } from "../createConfigRetriever.js";
 import type { ToolCall } from "../tools/utils/createTool.js";
 import { errorResult } from "../tools/utils/errorResult.js";
 
-let isAuthenticated = false;
-
 type AuthResult =
   | { authenticated: true }
   | { authenticated: false; reason: string };
@@ -42,19 +40,18 @@ export const OAuthClientCredentialsWrapper = (
   configRetriever: ConfigRetriever,
   apiClient: ApiClientClass,
 ) => {
+  let authentication: Promise<AuthResult> | undefined;
   return <Schema extends z.ZodType = z.ZodType>(
     call: ToolCall<Schema>,
   ): ToolCall<Schema> =>
     async (input: z.output<Schema>) => {
-      if (!isAuthenticated) {
-        const authResult = await authenticate(apiClient, configRetriever);
-        if (authResult.authenticated) {
-          isAuthenticated = true;
-        } else {
-          return errorResult(
-            `Failed to authenticate with Genesys Cloud. Reason:\n${authResult.reason}`,
-          );
-        }
+      authentication ??= authenticate(apiClient, configRetriever);
+      const authResult = await authentication;
+      if (!authResult.authenticated) {
+        authentication = undefined;
+        return errorResult(
+          `Failed to authenticate with Genesys Cloud. Reason:\n${authResult.reason}`,
+        );
       }
 
       return call(input);

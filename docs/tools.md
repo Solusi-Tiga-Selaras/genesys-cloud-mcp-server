@@ -171,6 +171,97 @@ Platform API endpoint used:
 
 - [`POST /api/v2/analytics/queues/observations/query`](https://developer.genesys.cloud/analyticsdatamanagement/analytics/observation/queue-query)
 
+## Get Queue Performance
+
+**Tool name:** `get_queue_performance`
+
+Returns historical queue performance for a time interval. It complements
+`query_queue_volumes`, which only counts conversations. Missing metrics are
+returned as `null`, not zero, so an empty queue stays distinguishable from a
+queue with zero-valued metrics.
+
+### Inputs
+
+- `queueIds` (required): One to 100 routing queue UUIDs
+- `startDate` (required): ISO-8601 start of the interval
+- `endDate` (required): ISO-8601 end of the interval
+- `granularity` (optional): One of `PT15M`, `PT30M`, `PT1H`, `PT3H`, `PT6H`,
+  `PT12H`, `P1D`, `P1W`, or `P1M`; omitting it returns only queue totals
+
+### Result
+
+Each queue reports these metrics for the requested interval and, when a
+granularity is supplied, the same metrics per interval bucket.
+
+| Field | Source metric | Unit |
+|---|---|---|
+| `offered` | `nOffered` count | interactions |
+| `answered` | `tAnswered` count | interactions |
+| `abandoned` | `tAbandon` count | interactions |
+| `transferred` | `nTransferred` count | interactions |
+| `overServiceLevel` | `nOverSLA` count | interactions |
+| `serviceLevelPercent` | `oServiceLevel` numerator / denominator x 100 | percent |
+| `asaMs` | `tAnswered` sum / count | milliseconds |
+| `avgHandleMs` | `tHandle` sum / count | milliseconds |
+| `avgTalkMs` | `tTalk` sum / count | milliseconds |
+| `avgHoldMs` | `tHeldComplete` sum / count | milliseconds |
+| `avgAcwMs` | `tAcw` sum / count | milliseconds |
+
+Averages are `null` when the underlying metric has no count, and
+`serviceLevelPercent` is `null` when the denominator is absent or zero.
+Invalid or reversed intervals are rejected before the API call. Only
+customer-purpose interactions are included.
+
+### Security
+
+Required permission:
+
+- `analytics:conversationAggregate:view`
+
+Platform API endpoint used:
+
+- [`POST /api/v2/analytics/conversations/aggregates/query`](https://developer.genesys.cloud/analyticsdatamanagement/analytics/analytics-apis#post-api-v2-analytics-conversations-aggregates-query)
+
+## Get Queue Members
+
+**Tool name:** `get_queue_members`
+
+Lists the members of a routing queue with their joined state, routing status,
+presence, skills, and languages. `joined`, `routingStatus`, and `presence` are
+returned as separate fields; a present or available presence alone does not
+mean the member can receive interactions. Skills and languages are omitted
+when Genesys Cloud does not return them.
+
+### Inputs
+
+- `queueId` (required): The UUID of the routing queue
+- `name` (optional): Filter on the member name
+- `joined` (optional): Filter on whether the member has joined the queue
+- `presence` (optional): One or more presence names to filter by
+- `routingStatus` (optional): One or more of `OFF_QUEUE`, `IDLE`,
+  `INTERACTING`, `NOT_RESPONDING`, and `COMMUNICATING`
+- `pageNumber` (optional): Page to retrieve, starting from 1; defaults to 1
+- `pageSize` (optional): Members per page, up to 100; defaults to 100
+
+### Result
+
+Each member reports `userId`, `name`, `joined`, `routingStatus`, `presence`,
+and, when available, `skills` and `languages`.
+
+Genesys Cloud does not return a total count for this endpoint, so pagination
+reports `pageNumber`, `pageSize`, `hasNextPage`, and `hasPreviousPage` instead
+of a total. Request another page when `hasNextPage` is true.
+
+### Security
+
+Required permission:
+
+- `routing:queue:view`
+
+Platform API endpoint used:
+
+- [`GET /api/v2/routing/queues/{queueId}/members`](https://developer.genesys.cloud/routing/routing/#get-api-v2-routing-queues--queueId--members)
+
 ## Sample Conversations By Queue
 
 **Tool name:** `sample_conversations_by_queue`
@@ -304,6 +395,34 @@ Required Permissions:
 - `analytics:conversationDetail:view`
 
 Platform API endpoints used:
+
+- [POST /api/v2/analytics/conversations/details/query](https://developer.genesys.cloud/devapps/api-explorer-standalone#post-api-v2-analytics-conversations-details-query)
+
+## Search Conversations by Contact ID
+
+**Tool name:** `search_conversations_by_contact_id`
+
+Finds conversation and external participant IDs for one contact, or up to 100
+contacts in one request. Each contact's conversations are chronological and
+receive a one-based `attempt` number; `latest` is the final item or `null`.
+
+### Inputs
+
+- `contactId`: One external contact UUID
+- `contactIds`: One to 100 external contact UUIDs for a bulk lookup. Use IDs
+  extracted from a CSV contact-ID column.
+- `startDate` and `endDate`: ISO-8601 time range
+
+Provide exactly one of `contactId` or `contactIds`. A single contact returns
+`{ contactId, latest, conversations }`; bulk returns `{ contacts: [...] }`.
+
+### Security
+
+Required permission:
+
+- `analytics:conversationDetail:view`
+
+Platform API endpoint used:
 
 - [POST /api/v2/analytics/conversations/details/query](https://developer.genesys.cloud/devapps/api-explorer-standalone#post-api-v2-analytics-conversations-details-query)
 

@@ -69,6 +69,8 @@ Answers which queues currently need attention.
 
 ### 3. `get_queue_performance`
 
+Status: Implemented.
+
 Answers how queues performed during a historical interval. It complements
 `query_queue_volumes`, which only counts conversations.
 
@@ -96,6 +98,8 @@ Answers how queues performed during a historical interval. It complements
 - Empty queues and zero-valued metrics remain distinguishable.
 
 ### 4. `get_queue_members`
+
+Status: Implemented.
 
 Answers who belongs to a queue and whether they are currently able to receive
 interactions.

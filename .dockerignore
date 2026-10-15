@@ -1,0 +1,11 @@
+.git
+.env
+.env.*
+genesys-profiles*.json
+node_modules
+dist
+mcpb-contents
+*.mcpb
+*.log
+.DS_Store
+._*
