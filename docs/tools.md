@@ -500,3 +500,77 @@ Platform API endpoints used:
 
 - [POST /api/v2/oauth/clients/{clientId}/usage/query](https://developer.genesys.cloud/devapps/api-explorer-standalone#post-api-v2-oauth-clients--clientId--usage-query)
 - [GET /api/v2/oauth/clients/{clientId}/usage/query/results/{executionId}](https://developer.genesys.cloud/devapps/api-explorer-standalone#get-api-v2-oauth-clients--clientId--usage-query-results--executionId-)
+
+## Messenger configurations and deployments
+
+These tools use the Genesys Cloud Web Deployments API. Read tools are always
+available; create, update, and publish tools require
+`GENESYSCLOUD_ENABLE_MESSENGER_WRITES=true` on the server. Do not configure
+write tools for automatic approval in the MCP client. MCP annotations do not
+enforce human approval. The flag applies to all configured profiles.
+
+| Tool | Operation |
+|---|---|
+| `list_messenger_configurations` | List configuration drafts or published configurations |
+| `get_messenger_configuration_draft` | Read a complete draft |
+| `list_messenger_configuration_versions` | List versions |
+| `get_messenger_configuration_version` | Read a published version |
+| `create_messenger_configuration` | Create a draft |
+| `update_messenger_configuration_draft` | Replace a complete draft |
+| `publish_messenger_configuration` | Publish a draft as a new version |
+| `list_messenger_deployments` | List deployments |
+| `get_messenger_deployment` | Read a deployment, including its snippet when returned |
+| `get_messenger_deployment_active_configuration` | Read the assigned active configuration |
+| `create_messenger_deployment` | Create a deployment |
+| `update_messenger_deployment` | Update a deployment |
+
+Create a configuration draft, inspect and update it, then explicitly publish
+it. Use the published configuration ID and version when creating a
+deployment. Assign a published inbound message flow and a supported content
+profile as needed; restrict allowed domains for production. A deployment's
+status controls activation separately from publishing the configuration.
+Install the returned snippet on the website or use the deployment key with a
+mobile SDK. See Genesys' [deployment guide](https://help.genesys.cloud/articles/deploy-messenger/).
+
+Configuration draft updates are **full replacements**, not patches: fetch the
+draft first and supply the entire modified configuration. Deployment updates
+fetch the current deployment and merge nested changes; arrays replace the
+existing arrays. Concurrent edits between read and write may be overwritten.
+Genesys validates the supplied configuration and deployment objects.
+
+Genesys lists all **Web Deployments > Configurations** and **Web Deployments >
+Deployments** permissions as prerequisites for managing Messenger. Related
+features can require additional permissions. Consult the
+[configuration](https://help.genesys.cloud/articles/configure-messenger/)
+and [deployment](https://help.genesys.cloud/articles/deploy-messenger/)
+guides for licensing, permissions, and prerequisites.
+
+## Architect flows
+
+`list_architect_flows` and `get_architect_flow` inspect flow metadata across
+types. `get_architect_publish_job` checks the status of a deployment job.
+These read tools are available by default.
+
+Set `GENESYSCLOUD_ENABLE_ARCHITECT_WRITES=true` to expose
+`publish_architect_flow`. Supply an Archy-format YAML document as `yaml`.
+Keep and review the YAML locally first: the cloud job **creates or updates and
+publishes** the flow, not an unpublished Architect draft. A successful upload
+means the job was submitted, not that publication succeeded; check its job ID
+with `get_architect_publish_job`. The tool accepts up to 5 MiB of YAML.
+Failure details are intentionally limited in tool output to avoid leaking
+presigned upload credentials; inspect Genesys for additional diagnostics.
+
+The MCP client must require explicit approval for publication; MCP annotations
+do not enforce human approval. The flag applies to all configured profiles.
+The server uses the selected profile's Genesys Cloud credentials. Docker
+Compose binds the HTTP port to localhost, but the HTTP service itself has no
+authentication: do not expose it publicly without access controls.
+
+The OAuth client needs the Architect permissions applicable to the flow and
+`architect:ui:view`. See the [Architect permissions overview](https://help.genesys.cloud/articles/architect-roles-permissions-overview/)
+and the [Archy installation prerequisites](https://developer.genesys.cloud/devapps/archy/install).
+The YAML is sent to a Genesys-managed cloud job; the local container does not
+need the Archy binary. Genesys' [flow resource](https://registry.terraform.io/providers/MyPureCloud/genesyscloud/latest/docs/resources/flow)
+documents inbound and outbound examples. Genesys validates the flow and its
+referenced resources; permissions and available flow types depend on the
+organization.

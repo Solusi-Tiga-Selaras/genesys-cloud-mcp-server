@@ -23,7 +23,9 @@ Solutif's MCP server for Genesys Cloud Platform API operations and analytics.
 | [`search_conversations_by_contact_id`](docs/tools.md#search-conversations-by-contact-id) | Finds conversation and participant IDs by external contact ID |
 | [`conversation_transcript`](docs/tools.md#conversation-transcript) | Retrieves a conversation transcript |
 | [`oauth_clients`](docs/tools.md#oauth-clients) | Lists OAuth clients |
+| [Messenger configuration and deployment tools](docs/tools.md#messenger-configurations-and-deployments) | Inspect and manage Messenger configurations and deployments |
 | [`oauth_client_usage`](docs/tools.md#oauth-client-usage) | Retrieves OAuth client usage |
+| [Architect flow tools](docs/tools.md#architect-flows) | Inspect flows and publish YAML through Genesys Cloud flow jobs |
 
 ## Local setup
 
@@ -57,6 +59,20 @@ The server is read-only by default. To expose `create_queue`, add:
 ```
 
 The OAuth client then needs `routing:queue:add` and `routing:queue:view`. Keep `create_queue` out of the MCP client's auto-approved tools so every write requires user approval.
+
+Messenger configuration and deployment reads are available by default. To
+enable their write tools, set `GENESYSCLOUD_ENABLE_MESSENGER_WRITES=true`.
+Publishing a configuration is a separate operation; a deployment can be
+activated independently. Do not auto-approve write tools in the MCP client:
+annotations are advisory, not server-side human approval. See the
+[Messenger tool guide](docs/tools.md#messenger-configurations-and-deployments)
+for permissions, workflow, and update risks.
+
+Architect flow reads are available by default. Set
+`GENESYSCLOUD_ENABLE_ARCHITECT_WRITES=true` to enable explicit YAML
+publication. The cloud job creates or updates and publishes the flow; it does
+not save an unpublished draft. Keep the YAML locally for review and do not
+auto-approve this tool. Archy does not need to run in the Docker container.
 
 To expose `search_genesys_cloud_developer_forum`, optionally add:
 
@@ -158,6 +174,20 @@ Profile URLs are routing identifiers, not authorization: anyone who can reach
 the server can request any configured profile. Apply the HTTP access controls
 described below, including per-profile authorization if callers have different
 client access.
+
+## Local Docker
+
+Copy `.env.example` to `.env`, fill in the Genesys region and OAuth client
+credentials, and enable only the write tools you need. For YAML publication,
+set `GENESYSCLOUD_ENABLE_ARCHITECT_WRITES=true`. Then run:
+
+```bash
+docker compose up --build -d
+```
+
+Connect the MCP client to `http://127.0.0.1:3000/mcp`. The Compose port
+binding is localhost-only; the HTTP server itself has no user authentication.
+This Compose configuration uses the single-organization environment variables.
 
 ## Remote Streamable HTTP
 

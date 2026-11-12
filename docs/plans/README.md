@@ -64,6 +64,5 @@ A planned tool is complete when:
 - Queue deletion or unrestricted queue updates.
 - Generic `call_genesys_api` access.
 - Agent presence or routing-status mutation.
-- Architect flow creation or publication.
 - Outbound campaign management.
 - A server-side AI summarizer; the MCP client already owns that job.

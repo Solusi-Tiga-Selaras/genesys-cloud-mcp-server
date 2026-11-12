@@ -18,42 +18,88 @@ describe("Server Runs", () => {
     if (client) await client.close();
   });
 
-  test("server returns list of tools", async () => {
+  test("Messenger write tools are disabled by default", async () => {
     const transport = new StdioClientTransport({
       command: "node",
-      args: ["--inspect", join(__dirname, "../../dist/index.js")],
+      args: [join(__dirname, "../../dist/index.js")],
+      env: { PATH: process.env.PATH ?? "" },
+    });
+    client = new Client({ name: "test-client", version: "1.0.0" });
+    await client.connect(transport);
+    const { tools } = await client.listTools();
+    const messengerTools = tools.filter(({ name }) =>
+      name.includes("messenger"),
+    );
+    expect(
+      messengerTools.some(
+        ({ annotations }) => annotations?.readOnlyHint === true,
+      ),
+    ).toBe(true);
+    expect(
+      messengerTools.every(
+        ({ annotations }) => annotations?.readOnlyHint === true,
+      ),
+    ).toBe(true);
+  });
+
+  test("Architect publication is absent unless explicitly enabled", async () => {
+    const transport = new StdioClientTransport({
+      command: "node",
+      args: [join(__dirname, "../../dist/index.js")],
+      env: { PATH: process.env.PATH ?? "" },
+    });
+    client = new Client({ name: "test-client", version: "1.0.0" });
+    await client.connect(transport);
+    const { tools } = await client.listTools();
+    expect(tools.some(({ name }) => name === "list_architect_flows")).toBe(
+      true,
+    );
+    expect(tools.some(({ name }) => name === "publish_architect_flow")).toBe(
+      false,
+    );
+  });
+
+  test("Architect publication is exposed as a write only with the enable flag", async () => {
+    const transport = new StdioClientTransport({
+      command: "node",
+      args: [join(__dirname, "../../dist/index.js")],
       env: {
-        // Provides path for node binary to be used in test
         PATH: process.env.PATH ?? "",
+        GENESYSCLOUD_ENABLE_ARCHITECT_WRITES: "true",
       },
     });
-
-    client = new Client({
-      name: "test-client",
-      version: "1.0.0",
-    });
-
+    client = new Client({ name: "test-client", version: "1.0.0" });
     await client.connect(transport);
-
     const { tools } = await client.listTools();
-    expect(tools.map(({ name }) => name)).toStrictEqual([
-      "search_genesys_cloud_docs",
-      "get_conversation_journey",
-      "search_queues",
-      "get_queue_health",
-      "get_queue_performance",
-      "get_queue_members",
-      "sample_conversations_by_queue",
-      "query_queue_volumes",
-      "voice_call_quality",
-      "conversation_sentiment",
-      "conversation_topics",
-      "search_voice_conversations",
-      "search_conversations_by_contact_id",
-      "conversation_transcript",
-      "oauth_clients",
-      "oauth_client_usage",
-    ]);
+    expect(
+      tools.find(({ name }) => name === "publish_architect_flow")?.annotations
+        ?.readOnlyHint,
+    ).toBe(false);
+  });
+
+  test("Messenger writes require the explicit enable flag", async () => {
+    const transport = new StdioClientTransport({
+      command: "node",
+      args: [join(__dirname, "../../dist/index.js")],
+      env: {
+        PATH: process.env.PATH ?? "",
+        GENESYSCLOUD_ENABLE_MESSENGER_WRITES: "true",
+      },
+    });
+    client = new Client({ name: "test-client", version: "1.0.0" });
+    await client.connect(transport);
+    const { tools } = await client.listTools();
+    for (const name of [
+      "create_messenger_configuration",
+      "update_messenger_configuration_draft",
+      "publish_messenger_configuration",
+      "create_messenger_deployment",
+      "update_messenger_deployment",
+    ]) {
+      expect(
+        tools.find((tool) => tool.name === name)?.annotations?.readOnlyHint,
+      ).toBe(false);
+    }
   });
 
   test("server exposes queue creation only when enabled", async () => {

@@ -3,11 +3,14 @@ import { LRUCache } from "lru-cache";
 import platformClient, {
   type ApiClientClass,
 } from "purecloud-platform-client-v2";
+import type { z } from "zod";
 import { OAuthClientCredentialsWrapper } from "./auth/OAuthClientCredentialsWrapper.js";
 import {
   type ConfigRetriever,
   createConfigRetriever,
 } from "./createConfigRetriever.js";
+import { architectPublishTools } from "./tools/architect/architectPublish.js";
+import { architectReadTools } from "./tools/architect/architectReads.js";
 import { conversationSentiment } from "./tools/conversationSentiment/conversationSentiment.js";
 import { conversationTopics } from "./tools/conversationTopics/conversationTopics.js";
 import { conversationTranscription } from "./tools/conversationTranscription/conversationTranscription.js";
@@ -16,6 +19,8 @@ import { getConversationJourney } from "./tools/getConversationJourney/getConver
 import { getQueueHealth } from "./tools/getQueueHealth/getQueueHealth.js";
 import { getQueueMembers } from "./tools/getQueueMembers/getQueueMembers.js";
 import { getQueuePerformance } from "./tools/getQueuePerformance/getQueuePerformance.js";
+import { messengerConfigurationTools } from "./tools/messengerConfigurations/messengerConfigurations.js";
+import { messengerDeploymentTools } from "./tools/messengerDeployments/messengerDeployments.js";
 import { oauthClients } from "./tools/oauthClients/oauthClients.js";
 import {
   type OAuthClientUsageResponse,
@@ -28,6 +33,7 @@ import { searchGenesysCloudDeveloperForum } from "./tools/searchGenesysCloudDeve
 import { searchGenesysCloudDocs } from "./tools/searchGenesysCloudDocs/searchGenesysCloudDocs.js";
 import { searchQueues } from "./tools/searchQueues/searchQueues.js";
 import { searchVoiceConversations } from "./tools/searchVoiceConversations/searchVoiceConversations.js";
+import type { ToolDefinition } from "./tools/utils/createTool.js";
 import { voiceCallQuality } from "./tools/voiceCallQuality/voiceCallQuality.js";
 
 export type McpServerFactory = () => McpServer;
@@ -57,12 +63,58 @@ export function createMcpServerFactory(
   const recordingApi = new platformClient.RecordingApi(apiClient);
   const oauthApi = new platformClient.OAuthApi(apiClient);
   const authorizationApi = new platformClient.AuthorizationApi(apiClient);
+  const webDeploymentsApi = new platformClient.WebDeploymentsApi(apiClient);
+  const architectApi = new platformClient.ArchitectApi(apiClient);
 
   return () => {
     const server = new McpServer({
       name: "Solutif Genesys Cloud",
       version: "0.2.0", // Same version as version in package.json
     });
+
+    const architectTools = [
+      ...architectReadTools({ architectApi }),
+      ...architectPublishTools({ architectApi }),
+    ] as unknown as ToolDefinition<z.ZodObject>[];
+    for (const tool of architectTools) {
+      if (
+        tool.schema.annotations.readOnlyHint === false &&
+        process.env.GENESYSCLOUD_ENABLE_ARCHITECT_WRITES !== "true"
+      ) {
+        continue;
+      }
+      server.registerTool(
+        tool.schema.name,
+        {
+          description: tool.schema.description,
+          inputSchema: tool.schema.paramsSchema.shape,
+          annotations: tool.schema.annotations,
+        },
+        withAuth(tool.call),
+      );
+    }
+
+    const messengerTools = [
+      ...messengerConfigurationTools({ webDeploymentsApi }),
+      ...messengerDeploymentTools({ webDeploymentsApi }),
+    ] as unknown as ToolDefinition<z.ZodObject>[];
+    for (const tool of messengerTools) {
+      if (
+        tool.schema.annotations.readOnlyHint === false &&
+        process.env.GENESYSCLOUD_ENABLE_MESSENGER_WRITES !== "true"
+      ) {
+        continue;
+      }
+      server.registerTool(
+        tool.schema.name,
+        {
+          description: tool.schema.description,
+          inputSchema: tool.schema.paramsSchema.shape,
+          annotations: tool.schema.annotations,
+        },
+        withAuth(tool.call),
+      );
+    }
 
     const searchGenesysCloudDocsTool = searchGenesysCloudDocs({
       fetchUrl: fetch,

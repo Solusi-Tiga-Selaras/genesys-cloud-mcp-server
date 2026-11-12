@@ -13,6 +13,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `GENESYSCLOUD_PROFILES_FILE` and `GENESYSCLOUD_PROFILE` for stdio, or
   `/mcp/<profile>` for Streamable HTTP. Each profile has its own region and
   OAuth credentials; unknown profiles never fall back to another client.
+- Messenger configuration and deployment tools for inspecting resources,
+  creating and updating them, and publishing configuration drafts. Write tools
+  require `GENESYSCLOUD_ENABLE_MESSENGER_WRITES=true`.
+- Architect flow inspection and opt-in YAML deployment via Genesys Cloud
+  flow jobs. Deploying YAML creates or updates and publishes a flow; it does
+  not create an unpublished Architect draft.
 
 ### Fixed
 
